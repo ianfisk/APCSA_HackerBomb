@@ -21,9 +21,9 @@ public class HackerVirus {
 	}
 
 	private void checkFirstPassword(Scanner passwordScanner) {
-		String P1 = "QVAgQ1NBIGlzIHNvIGNvb2w=";
+		String password1 = "QVAgQ1NBIGlzIHNvIGNvb2w=";
 
-		String expectedFirstPassword = new String(Base64.getDecoder().decode(P1));
+		String expectedFirstPassword = new String(Base64.getDecoder().decode(password1));
 		String firstPasswordAttempt = passwordScanner.next();
 		if (!firstPasswordAttempt.equals(expectedFirstPassword)) {
 			throw new WrongPasswordError("First password is WRONG");
@@ -31,9 +31,9 @@ public class HackerVirus {
 	}
 
 	private void checkSecondPassword(Scanner passwordScanner) {
-		String P2 = "VGhlIGRhdGUgaXMg";
+		String password2Prefix = "VGhlIGRhdGUgaXMg";
 
-		String expectedSecondPassword = new String(Base64.getDecoder().decode(P2)) + LocalDate.now();
+		String expectedSecondPassword = new String(Base64.getDecoder().decode(password2Prefix)) + LocalDate.now();
 		String secondPasswordAttempt = passwordScanner.next();
 		if (!secondPasswordAttempt.equals(expectedSecondPassword)) {
 			throw new WrongPasswordError("Second password is WRONG");
@@ -62,6 +62,29 @@ public class HackerVirus {
 			}
 		} else {
 			System.out.println("Ok...");
+		}
+	}
+
+	static class WrongPasswordError extends Error {
+		private static String EXPLOSION_ASCII = "    _.-^^---....,,--\n"
+				+ " _--                  --_\n"
+				+ "<                        >)\n"
+				+ "|                         |\n"
+				+ " \\._                   _./\n"
+				+ "    ```--. . , ; .--'''\n"
+				+ "          | |   |\n"
+				+ "       .-=||  | |=-.\n"
+				+ "       `-=#$%&%$#=-'\n"
+				+ "          | ;  :|\n"
+				+ " _____.,-#%&$@%#&#~,._____\n\n";
+
+		// Force a custom message.
+		@SuppressWarnings("unused")
+		private WrongPasswordError() {
+		}
+
+		public WrongPasswordError(String message) {
+			super("HACKERBOMB EXPLOOOOOoOOoDES\n\n" + EXPLOSION_ASCII + message);
 		}
 	}
 
