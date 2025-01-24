@@ -6,10 +6,11 @@ import java.util.Scanner;
 public class HackerVirus {
 
 	public void defuse() {
-		Scanner passwordScanner = new Scanner(System.in).useDelimiter("\n");
+		Scanner passwordScanner = new Scanner(System.in).useDelimiter("\n|\r\n");
 
 		checkRequiredPasswords(passwordScanner);
 		checkOptionalPassword(passwordScanner);
+		passwordScanner.close();
 
 		System.out.println("Success! You defused the bomb!");
 	}
@@ -28,6 +29,8 @@ public class HackerVirus {
 		if (!firstPasswordAttempt.equals(expectedFirstPassword)) {
 			throw new WrongPasswordError("First password is WRONG");
 		}
+
+		printLnColor("You entered password one correctly!");
 	}
 
 	private void checkSecondPassword(Scanner passwordScanner) {
@@ -38,14 +41,19 @@ public class HackerVirus {
 		if (!secondPasswordAttempt.equals(expectedSecondPassword)) {
 			throw new WrongPasswordError("Second password is WRONG");
 		}
+
+		printLnColor("You entered password two correctly!");
 	}
 
 	private void checkThirdPassword(Scanner passwordScanner) {
-		int magicNumber = random.nextInt(100);
+		Random randomNumGenerator = new Random();
+		int magicNumber = randomNumGenerator.nextInt(100);
 
 		if (!passwordScanner.hasNextInt() || passwordScanner.nextInt() != magicNumber) {
 			throw new WrongPasswordError("Third password is WRONG");
 		}
+
+		printLnColor("You entered password three correctly!");
 	}
 
 	private void checkOptionalPassword(Scanner passwordScanner) {
@@ -55,14 +63,20 @@ public class HackerVirus {
 		if (response.toLowerCase().equals("y")) {
 			System.out.println("Bypass this...");
 
-			int a = random.nextInt();
-			int b = random.nextInt();
+			Random randomNumGenerator = new Random();
+			int a = randomNumGenerator.nextInt();
+			int b = randomNumGenerator.nextInt();
 			if (a != b) {
-				throw new WrongPasswordError("Fourth (extra-hard) password is WRONG");
+				throw new WrongPasswordError(
+						"Fourth (extra-hard) password is WRONG. You didn't use the debugger to move past this if-statement...");
 			}
 		} else {
 			System.out.println("Ok...");
 		}
+	}
+
+	private static void printLnColor(String x) {
+		System.out.println(ConsoleColors.GREEN_BACKGROUND + ConsoleColors.WHITE_BOLD + x + ConsoleColors.RESET);
 	}
 
 	static class WrongPasswordError extends Error {
@@ -88,5 +102,9 @@ public class HackerVirus {
 		}
 	}
 
-	private final Random random = new Random();
+	private static class ConsoleColors {
+		private static final String RESET = "\033[0m";
+		private static final String WHITE_BOLD = "\033[1;37m";
+		private static final String GREEN_BACKGROUND = "\u001B[42m";
+	}
 }
