@@ -1,3 +1,5 @@
+package hacker.bomb;
+
 import java.time.LocalDate;
 import java.util.Base64;
 import java.util.Random;

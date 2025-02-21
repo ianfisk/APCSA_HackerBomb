@@ -1,3 +1,5 @@
+package hacker.bomb;
+
 public class Program {
 	public static void main(String[] args) {
 		HackerVirus virus = new HackerVirus();
