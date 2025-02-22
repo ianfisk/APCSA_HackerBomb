@@ -5,7 +5,7 @@ import java.util.Base64;
 import java.util.Random;
 import java.util.Scanner;
 
-public class HackerVirus {
+public class HackerBomb {
 
 	public void defuse() {
 		Scanner passwordScanner = new Scanner(System.in).useDelimiter("\n|\r\n");
