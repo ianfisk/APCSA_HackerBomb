@@ -58,8 +58,13 @@ public final class HarderHackerBomb {
 	}
 
 	private void triggerHiddenTrap() throws Exception {
-		int longestPausePointValue = -1;
-		try (MinimumTimer t = new MinimumTimer(1000 * 10)) {
+		final Box<Integer> pausePoint = new Box<Integer>();
+		try (MinimumTimer t = new MinimumTimer(1000 * 10, () -> {
+			if (pausePoint.value != 500) {
+				throw new WrongPasswordError("You didn't pause at the right time!");
+			}
+		})) {
+
 			long lastPauseMs = java.lang.System.currentTimeMillis();
 			long maxPausedTime = -1;
 
@@ -68,16 +73,10 @@ public final class HarderHackerBomb {
 				long pauseMs = currentMs - lastPauseMs;
 				if (pauseMs > maxPausedTime) {
 					maxPausedTime = pauseMs;
-					longestPausePointValue = i;
+					pausePoint.value = i;
 				}
 
 				lastPauseMs = currentMs;
-			}
-		}
-
-		try (Timer t = new Timer()) {
-			if (longestPausePointValue != 500) {
-				throw new WrongPasswordError("You didn't pause at the right time!");
 			}
 		}
 	}
@@ -154,8 +153,13 @@ public final class HarderHackerBomb {
 	}
 
 	private static final class MinimumTimer extends Timer {
-		public MinimumTimer(int maxMsDelta) {
+		private OnClose onClose;
+
+		// Loosely inspired by
+		// https://faithlife.codes/blog/2008/08/leverage_using_blocks_with_scope/
+		public MinimumTimer(int maxMsDelta, OnClose onClose) {
 			super(maxMsDelta);
+			this.onClose = onClose;
 		}
 
 		@Override
@@ -164,7 +168,17 @@ public final class HarderHackerBomb {
 				throw new WrongPasswordError(
 						"You actually do have to pause this program in the debugger at some point for 10s...");
 			}
+
+			onClose.onClose();
 		}
+	}
+
+	private interface OnClose {
+		void onClose() throws Exception;
+	}
+
+	private static class Box<T> {
+		public T value;
 	}
 
 	private byte[] salt = new byte[16];
